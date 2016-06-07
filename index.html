@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v1.1.0/mapbox-gl-geocoder.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v1.1.0/mapbox-gl-geocoder.css' type='text/css' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+
+<style>
+    #features {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 300px;
+        overflow: auto;
+        background: rgba(255, 255, 255, 0.8);
+    }
+    #map canvas {
+        cursor: crosshair;
+    }
+</style>
+
+<div id='map'></div>
+<pre id='features'></pre>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleGFjYTc5IiwiYSI6ImNpbzYyZGVlNzAyNjd2d2x6dHY1MnR6MjgifQ.anutU5yQ38NCFEMAM4Ubdw';
+    var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/mapbox/dark-v8', //stylesheet location
+        center: [-79.38, 43.6532], // starting position
+        zoom: 9 // starting zoom
+    });
+
+    map.on('style.load', function() {
+        map.addSource("quakes", {
+            "type": "geojson",
+            "data": "data/GDA_mcys_OnlyName.geojson"
+        });
+
+        // Once you have a datasource defined, you need to add a layer from that data source to the map.
+       map.addLayer({
+            "id": "quakes", // An id for this layer
+            "type": "fill", // As a point layer, we need style a symbol for each point.
+            "source": "quakes", // The source layer we defined above
+            "paint": {
+                'fill-opacity': 0.5,
+                'fill-outline-color': '#006378'
+            }
+        });
+
+        map.addLayer({
+            "id": "route-hover",
+            "type": "fill",
+            "source": "quakes",
+            "layout": {},
+            "paint": {
+                "fill-color": "#627BC1",
+                "fill-opacity": 1
+            },
+            "filter": ["==", "DAUID", ""]
+    });
+    });
+
+    map.on('click', function (e) {
+        var features = map.queryRenderedFeatures(e.point, { layers: ['quakes'] });
+        var meow = document.getElementById('features').innerHTML  = JSON.stringify(features,["properties","DAUID","CDNAME","CSDNAME","CCSNAME","ERNAME","CMANAME","SSD_Region","YJ_Region","MCYSRegion"],2, "\t");
+        if (features.length) {
+            map.setFilter("route-hover", ["==", "DAUID", features[0].properties.DAUID]);
+        } else {
+            map.setFilter("route-hover", ["==", "DAUID", ""]);
+        }
+       });
+
+
+
+    map.addControl(new mapboxgl.Geocoder());
+
+
+
+</script>
+
+</body>
+</html>
