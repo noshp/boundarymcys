@@ -1,6 +1,6 @@
 ﻿# MAP ALL THE THINGS!!! 
 ﻿
-It's Simple! Map all the things below so we can see all of this data in one place! 
+﻿ Map all the things below so we can see all of this data in one place! 
 
 
 <li><a href="https://www.dropbox.com/s/qb0obm3u4310ndv/Statscan%20MCYSGeographicBoundaries.zip?dl=0">Comprehensive Census Canada and MCYS Boundary File - GeoJSON file attached in the Git Repo </a><br>
